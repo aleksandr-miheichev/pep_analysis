@@ -29,6 +29,9 @@ class PepParsePipeline:
         self.results_dir = BASE_DIR / RESULTS
         self.results_dir.mkdir(exist_ok=True)
 
+    def open_spider(self, spider):
+        pass
+
     def process_item(self, item, spider):
         """
         Обрабатывает элемент PEP, увеличивает счетчик для статуса PEP.
