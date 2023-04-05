@@ -9,7 +9,7 @@ class PepSpider(scrapy.Spider):
     """
     name = "pep"
     allowed_domains = ["peps.python.org"]
-    start_urls = ["https://peps.python.org/"]
+    start_urls = [f"https://{domain}/" for domain in allowed_domains]
 
     def parse(self, response):
         """
@@ -23,7 +23,7 @@ class PepSpider(scrapy.Spider):
               документ PEP.
         """
         for link_pep_document in response.css(
-                'section#numerical-index a[href^="pep-"]'
+            'section#numerical-index a[href^="pep-"]'
         ):
             yield response.follow(link_pep_document, callback=self.parse_pep)
 
@@ -40,9 +40,8 @@ class PepSpider(scrapy.Spider):
               PepParseItem.
         """
         h1_text = response.css('h1.page-title::text')
-        data = {
-            'number': int(h1_text.re_first(r'PEP (\d+)')),
-            'name': h1_text.re_first(r'PEP \d+ – (.+)'),
-            'status': response.css('abbr::text').get(),
-        }
-        yield PepParseItem(data)
+        yield PepParseItem(dict(
+            number=h1_text.re_first(r'PEP (\d+)'),
+            name=h1_text.re_first(r'PEP \d+ – (.+)'),
+            status=response.css('abbr::text').get(),
+        ))
