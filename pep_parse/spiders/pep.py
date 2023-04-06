@@ -40,8 +40,8 @@ class PepSpider(scrapy.Spider):
               PepParseItem.
         """
         h1_text = response.css('h1.page-title::text')
-        yield PepParseItem(dict(
+        yield PepParseItem(
             number=h1_text.re_first(r'PEP (\d+)'),
             name=h1_text.re_first(r'PEP \d+ – (.+)'),
             status=response.css('abbr::text').get(),
-        ))
+        )

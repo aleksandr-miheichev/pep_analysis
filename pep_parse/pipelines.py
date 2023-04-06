@@ -58,14 +58,8 @@ class PepParsePipeline:
             current_time=datetime.now().strftime(DATE_FORMAT)
         )
         with open(file_name, mode='w', encoding='utf-8', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=[STATUS, QUANTITY])
-            writer.writeheader()
-            rows_to_write = [{
-                STATUS: status,
-                QUANTITY: quantity
-            } for status, quantity in self.results.items()]
-            rows_to_write.append({
-                STATUS: TOTAL,
-                QUANTITY: sum(self.results.values())
-            })
-            writer.writerows(rows_to_write)
+            csv.writer(f).writerows([
+                (STATUS, QUANTITY),
+                *self.results.items(),
+                (TOTAL, sum(self.results.values()))
+            ])
